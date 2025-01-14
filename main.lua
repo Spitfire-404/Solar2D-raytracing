@@ -58,10 +58,10 @@ function update(time)
 
   fpsText.text = "fps: "..fps
   rect.fill.effect = "filter.custom.test"
-  rect.fill.effect.x = Camera.nearPlaneWidth
-  rect.fill.effect.y = Camera.nearPlaneHeight
-  rect.fill.effect.z = Camera.near
-  rect.fill.effect.w = 1
+  rect.fill.effect.x = Camera.direction[1]
+  rect.fill.effect.y = Camera.direction[2]
+  rect.fill.effect.z = Camera.direction[3]
+  rect.fill.effect.w = Camera.near
   -- Allow the update function to be calledrr again
   canUpdate = true
 end
