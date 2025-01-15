@@ -20,8 +20,8 @@ local rect = display.newRect(display.contentCenterX,display.contentCenterY,displ
 rect.fill.effect = "filter.custom.test"
 
 -- Create a text object to display the current frame rate
-local fpsText = display.newText("fps: ", display.contentCenterX, display.contentHeight - 20)
-fpsText:setFillColor(1,0.2,0.2)
+local debugText = display.newText("fps: ", display.contentCenterX, display.contentHeight - 20)
+debugText:setFillColor(1,0.2,0.2)
 -- Variables to keep track of the current frame rate
 local current,dt,fps,prevFrameTime = 0,0,0,0
 -- Function to calculate the current frame rate
@@ -34,12 +34,34 @@ local function getFPS(time)
     fps = 1000 / dt
     fps = math.floor(fps*100)/100
 
-    -- Update the frame rate text object
-    fpsText.text = "fps: "..fps
-
     -- Save the current time for the next frame
     prevFrameTime = current
 end
+-- function for keyboard input
+local function onKeyEvent( event )
+    if event.phase == "down" then
+        if event.keyName == "w" then
+            Camera.direction[2] = Camera.direction[2] + 0.25
+        end
+        if event.keyName == "a" then
+            Camera.direction[1] = Camera.direction[1] - 0.25
+        end
+        if event.keyName == "s" then
+            Camera.direction[2] = Camera.direction[2] - 0.25
+        end
+        if event.keyName == "d" then
+            Camera.direction[1] = Camera.direction[1] + 0.25
+        end
+        if event.keyName == "q" then
+            Camera.direction[3] = Camera.direction[3] - 0.25
+        end
+        if event.keyName == "e" then
+            Camera.direction[3] = Camera.direction[3] + 0.25
+        end
+    end
+end
+Runtime:addEventListener("key", onKeyEvent)
+
 
 local i = 0
 -- Flag to indicate whether the update function can be called
@@ -56,7 +78,7 @@ function update(time)
   i = i +1
 
 
-  fpsText.text = "fps: "..fps
+  debugText.text = "fps: "..fps.." direction: "..Camera.direction[1].." "..Camera.direction[2].." "..Camera.direction[3]
   rect.fill.effect = "filter.custom.test"
   rect.fill.effect.x = Camera.direction[1]
   rect.fill.effect.y = Camera.direction[2]
