@@ -89,6 +89,6 @@ rayDir = normalize(rayDir);
     ray.origin = vec3(0,0,0);
     ray.direction = rayDir;
 
-    return vec4(rayHitSphere(ray, vec3(0,0,3), 1.0).normal,0);
+    return vec4(rayHitSphere(ray, vec3(0,0,2), 0.5).normal,0);
     
 } 

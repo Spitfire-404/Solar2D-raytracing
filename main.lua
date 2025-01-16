@@ -54,7 +54,7 @@ local function onKeyEvent( event )
     end
     Camera.direction[3] = math.cos(math.rad(rotHor))
     Camera.direction[2] = math.rad(rotVert)
-    Camera.direction[1] = math.rad(rotHor)
+    Camera.direction[1] = math.sin(math.rad(rotHor))
 end
 Runtime:addEventListener("key", onKeyEvent)
 
