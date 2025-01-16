@@ -3,7 +3,7 @@ Camera = {
     y = 0,
     z = 0,
 
-    direction = {0,0,1},
+    direction = {0,0,1.0},
     fov = 90,
     near = 1,
     far = 1000,
