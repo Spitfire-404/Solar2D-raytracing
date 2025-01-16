@@ -15,6 +15,7 @@ require("cameraManager")
 
 -- Create a rectangle that covers the entire screen
 local rect = display.newRect(display.contentCenterX,display.contentCenterY,display.actualContentWidth,display.actualContentHeight)
+rect.fill.effect = "filter.custom.test"
 
 -- Apply the custom shader to the rectangle
 rect.fill.effect = "filter.custom.test"
@@ -41,19 +42,28 @@ end
 local rotVert = 0
 local rotHor = 0
 local function onKeyEvent( event )
+  rect.fill.effect.w = 0
     if event.phase == "down" then
-        if event.keyName == "w" and rotVert > -90 then
+        if event.keyName == "w" and rotVert > -65 then
             rotVert = rotVert - 10
-        elseif event.keyName == "s" and rotVert < 90 then
+        elseif event.keyName == "s" and rotVert < 65 then
             rotVert = rotVert + 10
         elseif event.keyName == "a" then
-            rotHor = rotHor + 10
-        elseif event.keyName == "d" then
             rotHor = rotHor - 10
+        elseif event.keyName == "d" then
+            rotHor = rotHor + 10
+        elseif event.keyName == "up" then
+            rect.fill.effect.w = 1
+        elseif event.keyName == "left" then
+            rect.fill.effect.w = 2
+        elseif event.keyName == "down" then
+            rect.fill.effect.w = 3
+        elseif event.keyName == "right" then
+            rect.fill.effect.w = 4
         end
     end
     Camera.direction[3] = math.cos(math.rad(rotHor))
-    Camera.direction[2] = math.rad(rotVert)
+    Camera.direction[2] = math.tan(math.rad(rotVert))
     Camera.direction[1] = math.sin(math.rad(rotHor))
 end
 Runtime:addEventListener("key", onKeyEvent)
@@ -75,11 +85,9 @@ function update(time)
 
 
   debugText.text = "fps: "..fps.." direction: "..Camera.direction[1].." "..Camera.direction[2].." "..Camera.direction[3]
-  rect.fill.effect = "filter.custom.test"
   rect.fill.effect.x = Camera.direction[1]
   rect.fill.effect.y = Camera.direction[2]
   rect.fill.effect.z = Camera.direction[3]
-  rect.fill.effect.w = Camera.near
   -- Allow the update function to be calledrr again
   canUpdate = true
 end

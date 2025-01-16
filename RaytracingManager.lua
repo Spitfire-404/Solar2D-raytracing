@@ -4,8 +4,8 @@ category = "filter",
 name = "test",
 
 fragment =  io.open( "RaytacingShader.glsl" , "r" ):read("*all")
-
 }
+kernel.isTimeDependent = true
 kernel.vertexData =
 {
     {
@@ -32,8 +32,8 @@ kernel.vertexData =
     {
         name = "w",
         default = 0, 
-        min = -1,
-        max = 1,
+        min = 0,
+        max = 1000,
         index = 3,
     },
 }
