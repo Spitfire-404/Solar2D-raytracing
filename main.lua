@@ -38,27 +38,23 @@ local function getFPS(time)
     prevFrameTime = current
 end
 -- function for keyboard input
+local rotVert = 0
+local rotHor = 0
 local function onKeyEvent( event )
     if event.phase == "down" then
-        if event.keyName == "w" then
-            Camera.direction[2] = Camera.direction[2] + 0.25
-        end
-        if event.keyName == "a" then
-            Camera.direction[1] = Camera.direction[1] - 0.25
-        end
-        if event.keyName == "s" then
-            Camera.direction[2] = Camera.direction[2] - 0.25
-        end
-        if event.keyName == "d" then
-            Camera.direction[1] = Camera.direction[1] + 0.25
-        end
-        if event.keyName == "q" then
-            Camera.direction[3] = Camera.direction[3] - 0.25
-        end
-        if event.keyName == "e" then
-            Camera.direction[3] = Camera.direction[3] + 0.25
+        if event.keyName == "w" and rotVert > -90 then
+            rotVert = rotVert - 10
+        elseif event.keyName == "s" and rotVert < 90 then
+            rotVert = rotVert + 10
+        elseif event.keyName == "a" then
+            rotHor = rotHor + 10
+        elseif event.keyName == "d" then
+            rotHor = rotHor - 10
         end
     end
+    Camera.direction[3] = math.cos(math.rad(rotHor))
+    Camera.direction[2] = math.rad(rotVert)
+    Camera.direction[1] = math.rad(rotHor)
 end
 Runtime:addEventListener("key", onKeyEvent)
 
