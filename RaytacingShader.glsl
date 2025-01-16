@@ -90,7 +90,7 @@ handleInput(CoronaVertexUserData.w);
 
     P_DEFAULT float nearClipHeight = (tan((PI/180.0)*(fov / 2.0)) * nearClip )*2.0;
     P_DEFAULT float nearClipWidth = nearClipHeight*aspect;
-    P_DEFAULT vec3 localRayDir = vec3((2.0*texCoord.x - 1.0)/(aspect),(2.0* texCoord.y - 1.0)/(aspect), 1)*vec3(nearClipWidth, nearClipHeight, nearClip);
+    P_DEFAULT vec3 localRayDir = vec3((1.0*texCoord.x - 0.5)/(aspect),(1.0* texCoord.y - 0.5)/(aspect), 1)*vec3(nearClipWidth, nearClipHeight, nearClip);
    // Construct a rotation matrix from camera space to world space
 P_DEFAULT mat3 rotationMatrix = mat3(
   -camRight,
@@ -109,7 +109,7 @@ rayDir = normalize(rayDir);
     ray.direction = rayDir;
 
     sphere testSphere;
-    testSphere.radius = 1.0;
+    testSphere.radius = 0.5;
     testSphere.position = vec3(0,0,2);
     testSphere.material.color = vec3(1,1,1);
 
