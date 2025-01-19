@@ -142,8 +142,8 @@ hitInfo rayHitSphere(Ray ray, sphere sphere)
 
     vec3 vecDistFromSphere = spherePosition - ray.origin;
     float rayPen = dot(vecDistFromSphere, ray.direction);
-    float rayPenDistFromCenter = sqrt((length(vecDistFromSphere)*length(vecDistFromSphere)) - (rayPen*rayPen));
-    if (rayPenDistFromCenter <= sphereRadius)
+    float rayPenDistFromCenter = abs(sqrt((length(vecDistFromSphere)*length(vecDistFromSphere)) - (rayPen*rayPen)));
+    if (rayPenDistFromCenter < sphereRadius)
     {
         
         
@@ -167,16 +167,15 @@ vec3 rayTraceShperes(Ray ray, sphere spheres[100], int sphereCount, float rand,v
         Ray newRay = ray;
         for(int b = 0; b < maxBounces; b++)
         {
-            float closestHit = 1.0/0.0;
             hitInfo hit;
+            float closestHit = 1.0/0.0;
             for (int i = 0; i < sphereCount; i++)
             {   
                 hitInfo tempHit = rayHitSphere(newRay, spheres[i]);
                 if (tempHit.didHit && tempHit.distance < closestHit)
                 {
-                    closestHit = hit.distance;
+                    closestHit = tempHit.distance;
                     hit = tempHit;
-                    //color = hit.material.color;
                 }
                     //float value = float(texCoord.x + texCoord.y + CoronaTotalTime + (rand-0.5));
                     //newRay.direction = normalize(vec3(texture2D(CoronaSampler0,vec2(CoronaTotalTime,rand+float(r))/texCoord).r,texture2D(CoronaSampler0,vec2(CoronaTotalTime,rand+float(r))/texCoord).g,texture2D(CoronaSampler0,vec2(CoronaTotalTime,rand+float(r))/texCoord).b))-0.5;
@@ -184,31 +183,32 @@ vec3 rayTraceShperes(Ray ray, sphere spheres[100], int sphereCount, float rand,v
                     //{
                     //    newRay.direction = -newRay.direction;
                     //}
-            }
+            }   
+                //return hit.normal;
                 
                 if (!hit.didHit){
-                   return color = (vec3(1,1,1)*(-newRay.direction.y*2.0)); 
+                   return color = (vec3(1,1,1)*(-newRay.direction.y+1.0)/2.0); 
                    break;
                 }
                 if (hit.didHit)
-                {   
+                {
+                    color = (vec3(1,1,1)*(-newRay.direction.y+1.0)/2.0);
+                    if (b == 0){
+                        tempColor = hit.material.color;
+                    }else
+                    {
+                        tempColor = tempColor + hit.material.color;
+                    }
 
                     if (hit.material.emission > 0.0)
                     {
-                        color = ((tempColor + hit.material.color) * hit.material.emission)/float(b+3);
+                        color = ((tempColor + hit.material.color) * (hit.material.emission))/float(b+3);
                         break;
                     }else{
-                        if (b == 0){
-                            tempColor = hit.material.color;
-                        }else
-                        {
-                            tempColor = tempColor + hit.material.color;
-                        }
-                        newRay.direction = reflect(newRay.direction, hit.normal);
                         newRay.origin = hit.point;
+                        newRay.direction = normalize(reflect(newRay.direction, hit.normal));
                         //return normalize(newRay.direction);
                     }
-                    //return hit.material.color;
                 }
         }
         return color;
@@ -278,6 +278,11 @@ rayDir = normalize(rayDir);
     whiteMaterial.emission = 0.0;
     whiteMaterial.roughness = 0.1;
 
+    material redMaterial;
+    redMaterial.color = vec3(1.0,0.0,0.0);
+    redMaterial.emission = 0.0;
+    redMaterial.roughness = 0.1;
+
     material blueMaterial;
     blueMaterial.color = vec3(0.0,0.0,1.0);
     blueMaterial.emission = 0.0;
@@ -286,7 +291,7 @@ rayDir = normalize(rayDir);
 
     addSphere(vec3(0,100,10), 99.9, blueMaterial);
     addSphere(vec3(0.5,0,5), 0.5, blueMaterial);
-    addSphere(vec3(0.5+cos(CoronaTotalTime)*1.0,0,2.0+sin(CoronaTotalTime)*1.0), 0.25, whiteMaterial);
+    addSphere(vec3(0.5+cos(CoronaTotalTime)*1.0,0,2.0+sin(CoronaTotalTime)*1.0), 0.25, redMaterial);
     addSphere(vec3(10.0*cos(CoronaTotalTime),0,-1), 0.5, lightMaterial);
 
 
