@@ -8,8 +8,8 @@
 --
 -----------------------------------------------------------------------------------------
 
-io.output( io.open( "DataBuffer.png" , "w+b" ))
-io.write(1)
+--io.output( io.open( "DataBuffer.png" , "w+b" ))
+--io.write(1)
 
 display.setStatusBar(display.HiddenStatusBar)
 require("RaytracingManager")
@@ -18,7 +18,7 @@ require("cameraManager")
 
 -- Create a rectangle that covers the entire screen
 local rect = display.newRect(display.contentCenterX,display.contentCenterY,display.actualContentWidth,display.actualContentHeight)
-rect.fill = { type = "image", filename = "noise.jpg" }
+rect.fill = { type = "image", filename = "farm_field_puresky_4k.jpg" }
 
 -- Apply the custom shader to the rectangle
 rect.fill.effect = "filter.custom.test"
