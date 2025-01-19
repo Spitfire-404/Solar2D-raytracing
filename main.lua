@@ -8,6 +8,9 @@
 --
 -----------------------------------------------------------------------------------------
 
+io.output( io.open( "DataBuffer.png" , "w+b" ))
+io.write(1)
+
 display.setStatusBar(display.HiddenStatusBar)
 require("RaytracingManager")
 require("shapes")
@@ -15,10 +18,16 @@ require("cameraManager")
 
 -- Create a rectangle that covers the entire screen
 local rect = display.newRect(display.contentCenterX,display.contentCenterY,display.actualContentWidth,display.actualContentHeight)
-rect.fill.effect = "filter.custom.test"
+rect.fill = { type = "image", filename = "noise.jpg" }
 
 -- Apply the custom shader to the rectangle
 rect.fill.effect = "filter.custom.test"
+
+
+
+
+
+
 
 -- Create a text object to display the current frame rate
 local debugText = display.newText("fps: ", display.contentCenterX, display.contentHeight - 20)
@@ -52,14 +61,14 @@ local function onKeyEvent( event )
             rotHor = rotHor - 10
         elseif event.keyName == "d" then
             rotHor = rotHor + 10
-        elseif event.keyName == "up" then
-            rect.fill.effect.w = 1
-        elseif event.keyName == "left" then
-            rect.fill.effect.w = 2
-        elseif event.keyName == "down" then
-            rect.fill.effect.w = 3
-        elseif event.keyName == "right" then
-            rect.fill.effect.w = 4
+        --elseif event.keyName == "up" then
+        --    rect.fill.effect.w = 1
+        --elseif event.keyName == "left" then
+        --    rect.fill.effect.w = 2
+        --elseif event.keyName == "down" then
+        --    rect.fill.effect.w = 3
+        --elseif event.keyName == "right" then
+        --    rect.fill.effect.w = 4
         end
     end
     Camera.direction[3] = math.cos(math.rad(rotHor))
@@ -88,6 +97,7 @@ function update(time)
   rect.fill.effect.x = Camera.direction[1]
   rect.fill.effect.y = Camera.direction[2]
   rect.fill.effect.z = Camera.direction[3]
+  rect.fill.effect.w = math.random()
   -- Allow the update function to be calledrr again
   canUpdate = true
 end

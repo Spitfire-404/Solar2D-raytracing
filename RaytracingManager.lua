@@ -4,6 +4,7 @@ category = "filter",
 name = "test",
 
 fragment =  io.open( "RaytacingShader.glsl" , "r" ):read("*all")
+--fragment =  io.open( "random.glsl" , "r" ):read("*all")
 }
 kernel.isTimeDependent = true
 kernel.vertexData =
