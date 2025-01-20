@@ -1,5 +1,5 @@
-#extension GL_EXT_gpu_shader4 : enable
 
+#extension GL_EXT_gpu_shader4 : enable
 
 const float fov = 90.0;
 const float PI = 3.1415926535897932384626433832795897932384626433832795;
@@ -164,10 +164,9 @@ vec3 rayTraceShperes(Ray ray, sphere spheres[100], int sphereCount, float rand,v
     vec3 totalColor;
     for(int r = 0; r < maxRaysPerPixel; r++){
         vec3 color = vec3(0,0,0);
-        Ray newRay = ray;
-        newRay.direction = (newRay.direction);
+        Ray stepRay = ray;
 
-        sphere tempSphere;
+        sphere lastSphere;
         for(int b = 0; b < maxBounces; b++)
         {
             vec3 tempColor;
@@ -175,29 +174,28 @@ vec3 rayTraceShperes(Ray ray, sphere spheres[100], int sphereCount, float rand,v
             float closestHit = 1.0/0.0;
             for (int i = 0; i < sphereCount; i++)
             {   
-                hitInfo tempHit = rayHitSphere(newRay, spheres[i]);
-                if (tempHit.didHit && tempHit.distance < closestHit && tempHit.sphere != tempSphere)
+                hitInfo tempHit = rayHitSphere(stepRay, spheres[i]);
+                if (tempHit.didHit && tempHit.distance < closestHit && tempHit.sphere != lastSphere)
                 {
                     closestHit = tempHit.distance;
                     hit = tempHit;
                 }
                     //float value = float(texCoord.x + texCoord.y + CoronaTotalTime + (rand-0.5));
-                    //newRay.direction = normalize(vec3(texture2D(CoronaSampler0,vec2(CoronaTotalTime,rand+float(r))/texCoord).r,texture2D(CoronaSampler0,vec2(CoronaTotalTime,rand+float(r))/texCoord).g,texture2D(CoronaSampler0,vec2(CoronaTotalTime,rand+float(r))/texCoord).b))-0.5;
-                    //if (dot(newRay.direction, hit.normal) < 0.0 || mod(CoronaTotalTime,2.0) == 1.0)
+                    //stepRay.direction = normalize(vec3(texture2D(CoronaSampler0,vec2(CoronaTotalTime,rand+float(r))/texCoord).r,texture2D(CoronaSampler0,vec2(CoronaTotalTime,rand+float(r))/texCoord).g,texture2D(CoronaSampler0,vec2(CoronaTotalTime,rand+float(r))/texCoord).b))-0.5;
+                    //if (dot(stepRay.direction, hit.normal) < 0.0 || mod(CoronaTotalTime,2.0) == 1.0)
                     //{
-                    //    newRay.direction = -newRay.direction;
+                    //    stepRay.direction = -stepRay.direction;
                     //}
             }   
-            if (hit.sphere == tempSphere)
+            if (hit.sphere == lastSphere)
             {
                 hit.didHit = false;
             }
-            tempSphere = hit.sphere;
+            lastSphere = hit.sphere;
             
-            if (!hit.didHit)
-            {
-               color = vec3(texture2D( CoronaSampler0, vec2(newRay.direction.x, (-newRay.direction.y))));
-               break;
+            if (!hit.didHit) {
+                color = vec3(texture2D(CoronaSampler0,vec2(cos(stepRay.direction.x),-stepRay.direction.y)));
+                break;
             }
             else
             {
@@ -207,8 +205,8 @@ vec3 rayTraceShperes(Ray ray, sphere spheres[100], int sphereCount, float rand,v
                 {
                     tempColor = tempColor + hit.sphere.material.color;
                 }
-                    newRay.origin = hit.point;
-                    newRay.direction = reflect(newRay.direction, hit.normal);
+                    stepRay.origin = hit.point;
+                    stepRay.direction = reflect(stepRay.direction, hit.normal);
                 if (hit.sphere.material.emission > 0.0)
                 {
                     color = ((tempColor + hit.sphere.material.color) * (hit.sphere.material.emission))/float(b+2);
@@ -216,7 +214,6 @@ vec3 rayTraceShperes(Ray ray, sphere spheres[100], int sphereCount, float rand,v
                 }
             }
         }
-        //return color;
         totalColor = totalColor + color;
     }
     totalColor = totalColor / float(maxRaysPerPixel);
