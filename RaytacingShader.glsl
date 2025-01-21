@@ -160,16 +160,16 @@ hitInfo rayHitSphere(Ray ray, sphere sphere)
     }
     return hit;
 }
-vec3 rayTraceShperes(Ray ray, sphere spheres[100], int sphereCount, float rand,vec2 texCoord){
-    vec3 totalColor;
-    for(int r = 0; r < maxRaysPerPixel; r++){
+vec3 rayTraceSpheres(Ray ray, sphere spheres[100], int sphereCount, float rand,vec2 texCoord){
+    vec3 totalColor = vec3(1);
+    for (int r = 0; r < maxRaysPerPixel;r++){
+
         vec3 color = vec3(0,0,0);
         Ray stepRay = ray;
-
         sphere lastSphere;
+        vec3 tintColor = vec3(1);
         for(int b = 0; b < maxBounces; b++)
         {
-            vec3 tempColor;
             hitInfo hit;
             float closestHit = 1.0/0.0;
             for (int i = 0; i < sphereCount; i++)
@@ -192,32 +192,30 @@ vec3 rayTraceShperes(Ray ray, sphere spheres[100], int sphereCount, float rand,v
                 hit.didHit = false;
             }
             lastSphere = hit.sphere;
-            
+
             if (!hit.didHit) {
-                color = vec3(texture2D(CoronaSampler0,vec2(cos(stepRay.direction.x),-stepRay.direction.y)));
+                color = vec3(texture2D(CoronaSampler0,vec2(cos(stepRay.direction.x),-stepRay.direction.y)))*tintColor;
                 break;
             }
             else
             {
-                if (b == 0){
-                    tempColor = hit.sphere.material.color;
-                }else
-                {
-                    tempColor = tempColor + hit.sphere.material.color;
-                }
+
+                    tintColor = tintColor * hit.sphere.material.color;
+
                     stepRay.origin = hit.point;
                     stepRay.direction = reflect(stepRay.direction, hit.normal);
                 if (hit.sphere.material.emission > 0.0)
                 {
-                    color = ((tempColor + hit.sphere.material.color) * (hit.sphere.material.emission))/float(b+2);
+                    color = (tintColor * (hit.sphere.material.emission))/float(b);
                     break;
                 }
             }
         }
-        totalColor = totalColor + color;
+        totalColor = totalColor * color;
     }
-    totalColor = totalColor / float(maxRaysPerPixel);
+    totalColor = totalColor/float(maxRaysPerPixel);
     return totalColor;
+    
 }
 
 void test (inout material material){
@@ -281,18 +279,18 @@ rayDir = normalize(rayDir);
     whiteMaterial.roughness = 0.1;
 
     material redMaterial;
-    redMaterial.color = vec3(1.0,0.0,0.0);
+    redMaterial.color = vec3(0.8,0.1,0.1);
     redMaterial.emission = 0.0;
     redMaterial.roughness = 0.1;
 
     material blueMaterial;
-    blueMaterial.color = vec3(0.0,0.0,1.0);
+    blueMaterial.color = vec3(0.1,0.1,0.8);
     blueMaterial.emission = 0.0;
     blueMaterial.roughness = 0.1;
     
 
     addSphere(vec3(0,100,10), 99.8, blueMaterial);
-    addSphere(vec3(0.5,0,2), 0.5, blueMaterial);
+    addSphere(vec3(0.5,0,2), 0.5, whiteMaterial);
     addSphere(vec3(0.5+cos(CoronaTotalTime)*1.0,-0.2,2.0+sin(CoronaTotalTime)*1.0), 0.25, redMaterial);
     addSphere(vec3(10.0*cos(CoronaTotalTime),0,-1), 0.5, lightMaterial);
 
@@ -301,7 +299,8 @@ rayDir = normalize(rayDir);
     vec4 texColor = texture2D( CoronaSampler0, texCoord);
     //return vec4(texColor);
     //return vec4(rayHitSphere(ray, testSphere).material.color,0);
-    return vec4(rayTraceShperes(ray, sphereArray, sphereCount, CoronaVertexUserData.w, texCoord),0);
+
+    return vec4(rayTraceSpheres(ray,sphereArray,sphereCount,CoronaVertexUserData.w,texCoord),0);
     //return vec4(rayHitSphere(ray, testSphere).didHit,0,0,0);
     //return (vec4(0,Random(texCoord + 2.01),0,0));
     //return vec4(ray.direction,0);
