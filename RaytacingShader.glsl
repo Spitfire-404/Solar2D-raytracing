@@ -145,7 +145,7 @@ material copyMaterial(material material){
 
 P_COLOR vec4 FragmentKernel( P_UV vec2 texCoord )
 {
-handleInput(CoronaVertexUserData.w);
+
 
     P_DEFAULT vec3 camDir = normalize(CoronaVertexUserData.xyz);
     P_DEFAULT vec3 camDirEpsilon = camDir + vec3(0.00001, 0.00001, 0.00001);
@@ -157,16 +157,17 @@ handleInput(CoronaVertexUserData.w);
     P_DEFAULT float nearClipWidth = nearClipHeight*aspect;
     P_DEFAULT vec3 localRayDir = vec3((1.0*texCoord.x - 0.5)/(2.0),(1.0* texCoord.y - 0.5)/(2.0), 1)*vec3(nearClipWidth, nearClipHeight, nearClip);
    // Construct a rotation matrix from camera space to world space
-P_DEFAULT mat3 rotationMatrix = mat3(
-  -camRight,
-  camUp,
-  camDir
-);
+    P_DEFAULT mat3 rotationMatrix = mat3
+    (
+        -camRight,
+        camUp,
+        camDir
+    );
 
 
-// Transform localRayDir from camera space to world space
-P_DEFAULT vec3 rayDir = rotationMatrix * localRayDir;
-rayDir = normalize(rayDir);
+    // Transform localRayDir from camera space to world space
+    P_DEFAULT vec3 rayDir = rotationMatrix * localRayDir;
+    rayDir = normalize(rayDir);
 
     Ray ray;
     ray.origin = position;
