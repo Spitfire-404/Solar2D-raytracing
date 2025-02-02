@@ -6,7 +6,7 @@ const float PI = 3.1415926535897932384626433832795897932384626433832795;
 const float aspect = (1280.0/720.0);
 const float nearClip = 0.001;
 
-const int maxBounces = 40;
+const int maxBounces = 60;
 const int maxRaysPerPixel = 1;
 
 struct Ray
@@ -70,13 +70,14 @@ vec3 rayTraceSpheres(Ray ray, sphere spheres[100], int sphereCount, float rand,v
     vec3 totalColor = vec3(1);
     for (int r = 0; r < maxRaysPerPixel;r++){
 
-        vec3 color = vec3(0,0,0);
+        vec3 color = vec3(1,1,1);
         Ray stepRay = ray;
-        sphere lastSphere;
         vec3 tintColor = vec3(1);
         for(int b = 0; b < maxBounces; b++)
         {
+            sphere lastSphere;
             hitInfo hit;
+            hit.didHit = false;
             float closestHit = 1.0/0.0;
             for (int i = 0; i < sphereCount; i++)
             {   
@@ -93,10 +94,6 @@ vec3 rayTraceSpheres(Ray ray, sphere spheres[100], int sphereCount, float rand,v
                     //    stepRay.direction = -stepRay.direction;
                     //}
             }   
-            if (hit.sphere == lastSphere)
-            {
-                hit.didHit = false;
-            }
             lastSphere = hit.sphere;
 
             if (!hit.didHit) {
