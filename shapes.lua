@@ -1,19 +1,20 @@
---shapes.lua
+-- shapes.lua
 
-local sphere ={
+local Sphere = {
     name = "sphere",
     x = 0,
     y = 0,
     z = 0,
     radius = 0,
-    init = function(self,x,y,z,radius)
+    init = function(self, x, y, z, radius)
         self.x = x
         self.y = y
         self.z = z
         self.radius = radius
     end
 }
-local cube = {
+
+local Cube = {
     name = "cube",
     x = 0,
     y = 0,
@@ -21,7 +22,7 @@ local cube = {
     width = 0,
     height = 0,
     depth = 0,
-    init = function(self,x,y,z,width,height,depth)
+    init = function(self, x, y, z, width, height, depth)
         self.x = x
         self.y = y
         self.z = z
@@ -30,7 +31,8 @@ local cube = {
         self.depth = depth
     end
 }
-local triangle = {
+
+local Triangle = {
     name = "triangle",
     x1 = 0,
     y1 = 0,
@@ -41,7 +43,7 @@ local triangle = {
     x3 = 0,
     y3 = 0,
     z3 = 0,
-    init = function(self,x1,y1,z1,x2,y2,z2,x3,y3,z3)
+    init = function(self, x1, y1, z1, x2, y2, z2, x3, y3, z3)
         self.x1 = x1
         self.y1 = y1
         self.z1 = z1

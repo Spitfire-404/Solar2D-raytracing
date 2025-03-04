@@ -1,10 +1,9 @@
 
-kernel = {
-category = "filter",
-name = "test",
-
-fragment =  io.open( "RaytacingShader.glsl" , "r" ):read("*all")
---fragment =  io.open( "random.glsl" , "r" ):read("*all")
+local kernel = {
+    category = "filter",
+    name = "test",
+    fragment = io.open("RaytracingShader.glsl", "r"):read("*all")
+    --fragment = io.open("random.glsl", "r"):read("*all")
 }
 kernel.isTimeDependent = true
 kernel.vertexData =
@@ -23,7 +22,7 @@ kernel.vertexData =
         max = 1,
         index = 1,
     },  
-  {
+    {
         name = "z",
         default = 0, 
         min = -1,
