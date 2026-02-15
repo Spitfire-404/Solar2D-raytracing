@@ -1,4 +1,3 @@
-#extension GL_EXT_gpu_shader4 : enable
 
 const float fov = 90.0;
 const float PI = 3.1415926535897932384626433832795897932384626433832795;
@@ -70,7 +69,7 @@ vec3 rayTraceSpheres(Ray ray, Sphere spheres[100], int sphereCount, float rand, 
     vec3 totalColor = vec3(1);
     for (int r = 0; r < maxRaysPerPixel; r++) {
 
-        vec3 color = vec3(1,1,1);
+        vec3 color = vec3(0,0,0);
         Ray stepRay = ray;
         vec3 tintColor = vec3(1);
         for (int b = 0; b < maxBounces; b++)
@@ -79,6 +78,8 @@ vec3 rayTraceSpheres(Ray ray, Sphere spheres[100], int sphereCount, float rand, 
             HitInfo hit;
             hit.didHit = false;
             float closestHit = 1.0/0.0;
+
+            // get closest hit sphere
             for (int i = 0; i < sphereCount; i++)
             {   
                 HitInfo tempHit = rayHitSphere(stepRay, spheres[i]);
@@ -96,20 +97,23 @@ vec3 rayTraceSpheres(Ray ray, Sphere spheres[100], int sphereCount, float rand, 
             }   
             lastSphere = hit.sphere;
 
+            // if nothing hit, sample the skybox
             if (!hit.didHit) {
                 color = vec3(texture2D(CoronaSampler0,vec2(cos(stepRay.direction.x),-stepRay.direction.y)))*tintColor;
                 break;
             }
+            
             else
             {
+                    // otherwise tint based on material
+                    tintColor = (tintColor + hit.sphere.material.color)/2.0;
 
-                    tintColor = tintColor * hit.sphere.material.color;
-
+                    // setup ray for next bounce
                     stepRay.origin = hit.point;
                     stepRay.direction = reflect(stepRay.direction, hit.normal);
                 if (hit.sphere.material.emission > 0.0)
                 {
-                    color = (tintColor * (hit.sphere.material.emission))/float(b);
+                    color = (tintColor * (hit.sphere.material.emission));
                     break;
                 }
             }
